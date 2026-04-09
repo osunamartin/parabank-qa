@@ -4,11 +4,15 @@ from webdriver_manager.chrome import ChromeDriverManager
 
 
 def create_driver():
-    service = Service(ChromeDriverManager().install())
 
     options = webdriver.ChromeOptions()
-    options.add_argument("--start-maximized")
+    options.add_argument("--headless")
+    options.add_argument("--no-sandbox")
+    options.add_argument("--disable-dev-shm-usage")
 
-    driver = webdriver.Chrome(service=service, options=options)
+    driver = webdriver.Chrome(
+        service=Service(ChromeDriverManager().install()),
+        options=options
+    )
 
     return driver
