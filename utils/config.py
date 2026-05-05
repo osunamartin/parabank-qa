@@ -1,0 +1,5 @@
+BASE_URL = "https://parabank.parasoft.com/parabank/index.htm"
+REGISTER_URL = "https://parabank.parasoft.com/parabank/register.htm"
+OVERVIEW_URL = "https://parabank.parasoft.com/parabank/overview.htm"
+OPEN_ACCOUNT_URL = "https://parabank.parasoft.com/parabank/openaccount.htm"
+TRANSFER_URL = "https://parabank.parasoft.com/parabank/transfer.htm"
