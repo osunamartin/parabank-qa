@@ -61,7 +61,7 @@ parabank-qa/
 | Module | Test | What it verifies |
 |---|---|---|
 | Login | `test_login_valid_user` | Valid credentials land on Accounts Overview |
-| Login | `test_login_invalid` | Wrong password shows "could not be verified" error |
+| Login | `test_login_empty` | Leaving empty fields shows an error message |
 | Registration | `test_register_new_user_successfully` | New user registers and sees welcome message |
 | Registration | `test_register_duplicate_username_shows_error` | Existing username triggers field-level error |
 | Registration | `test_register_blank_form_shows_validation_errors` | Empty form shows required-field errors |
@@ -210,7 +210,7 @@ parabank-qa/
 | Módulo | Prueba | Qué verifica |
 |---|---|---|
 | Login | `test_login_valid_user` | Credenciales válidas redirigen a Accounts Overview |
-| Login | `test_login_invalid` | Contraseña incorrecta muestra error de verificación |
+| Login | `test_login_empty` | Dejar campos vacíos muestra un mensaje de error |
 | Registro | `test_register_new_user_successfully` | Usuario nuevo se registra y ve el mensaje de bienvenida |
 | Registro | `test_register_duplicate_username_shows_error` | Usuario existente genera error en el campo correspondiente |
 | Registro | `test_register_blank_form_shows_validation_errors` | Formulario vacío muestra errores de campo requerido |
