@@ -12,13 +12,12 @@ def test_login_valid_user(driver):
     assert "Accounts Overview" in driver.page_source
 
 
-def test_login_invalid(driver):
+def test_login_empty(driver):
     """
-    Verifies that an incorrect password triggers an inline error message
-    stating that credentials could not be verified.
+    Verifies that leaving empty fields shows an error message stating username and password are required.
     """
     login_page = LoginPage(driver)
-    login_page.login("john", "wrong_password")
+    login_page.login("", "")
 
     error_message = login_page.get_error_message()
-    assert "could not be verified" in error_message
+    assert "enter a username and password" in error_message
