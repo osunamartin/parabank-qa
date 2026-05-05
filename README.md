@@ -141,7 +141,7 @@ Every page of ParaBank has a corresponding class under `pages/`. Each class inhe
 
 ### CI / CD
 
-Tests run automatically on every push and pull request via **GitHub Actions** (`ubuntu-latest`, Python 3.11). Chrome is pre-installed on the runner; `driver_factory.py` detects the `CI` environment variable and enables headless mode automatically. The HTML report is uploaded as a build artifact after every run.
+Tests run automatically on every push and pull request via **GitHub Actions** (`ubuntu-latest`, Python 3.11). Chrome is installed first; `driver_factory.py` detects the `CI` environment variable and enables headless mode automatically. The HTML report is uploaded as a build artifact after every run.
 
 ---
 
@@ -290,4 +290,4 @@ Cada página de ParaBank tiene su clase correspondiente en `pages/`. Todas hered
 
 ### CI / CD
 
-Las pruebas se ejecutan automáticamente en cada push y pull request mediante **GitHub Actions** (`ubuntu-latest`, Python 3.11). Chrome viene preinstalado en el runner; `driver_factory.py` detecta la variable de entorno `CI` y activa el modo headless automáticamente. El reporte HTML se sube como artefacto de la build después de cada ejecución.
+Las pruebas se ejecutan automáticamente en cada push y pull request mediante **GitHub Actions** (`ubuntu-latest`, Python 3.11). Chrome se instalará durante este proceso; `driver_factory.py` detecta la variable de entorno `CI` y activa el modo headless automáticamente. El reporte HTML se sube como artefacto de la build después de cada ejecución.
