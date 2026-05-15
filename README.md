@@ -1,293 +1,501 @@
-# ParaBank QA Automation
+ENG
 
-> [Versión en Español](#parabank-qa-automatización)
+# 🎯 Objective
 
-End-to-end test automation framework for the [ParaBank](https://parabank.parasoft.com) demo banking application, built with **Selenium WebDriver** and **pytest** following the **Page Object Model** (POM) pattern.
+This repository contains an end-to-end test automation framework for the demo banking application [ParaBank](https://parabank.parasoft.com), using:
 
----
+* ✅ Selenium WebDriver
+* ✅ Pytest
+* ✅ Page Object Model (POM)
+* ✅ UI Automation
+* ✅ Automated HTML Reports
 
-## Tech Stack
+The goal is to validate critical banking system functionalities in a reproducible and maintainable way.
 
-| Tool | Version | Role |
-|---|---|---|
-| Python | 3.11+ | Language |
-| Selenium WebDriver | 4.x | Browser automation |
-| pytest | 9.x | Test runner |
-| pytest-html | 4.x | HTML report generation |
-| webdriver-manager | 4.x | Auto-manages ChromeDriver |
+Including:
 
----
-
-## [Manual and Exploratory Test Cases](https://docs.google.com/spreadsheets/d/1Y6SNjHjeQ5mN3Z1oCo8Gp-3OE2-S-Jf9Gco2HFdXYKA/edit?usp=sharing)
-
----
-
-## Project Structure
-
-```
-parabank-qa/
-├── locators/               # Element selectors, grouped by page
-│   ├── login_locators.py
-│   ├── register_locators.py
-│   ├── accounts_locators.py
-│   └── transfer_locators.py
-├── pages/                  # Page Object Model classes
-│   ├── base_page.py        # Shared actions with built-in explicit waits
-│   ├── login_page.py
-│   ├── register_page.py
-│   ├── accounts_page.py
-│   └── transfer_page.py
-├── tests/                  # pytest test files
-│   ├── test_login.py
-│   ├── test_register.py
-│   ├── test_accounts.py
-│   └── test_transfer.py
-├── test_data/              # Reusable test data and generators
-│   └── users.py
-├── utils/                  # Shared utilities
-│   ├── config.py           # URL constants
-│   ├── driver_factory.py   # Chrome driver setup (CI-aware)
-│   └── waits.py            # Explicit wait helpers
-├── reports/                # Auto-generated HTML reports (git-ignored)
-├── conftest.py             # pytest fixtures (driver, logged_in_driver)
-├── pytest.ini              # pytest configuration
-└── requirements.txt
-```
+* User login
+* User registration
+* Bank account overview
+* Opening new accounts
+* Fund transfers between accounts
+* Form validations and error handling
 
 ---
 
-## Test Coverage
+## 📝 Manual Testing Documentation
 
-| Module | Test | What it verifies |
-|---|---|---|
-| Login | `test_login_valid_user` | Valid credentials land on Accounts Overview |
-| Login | `test_login_empty` | Leaving empty fields shows an error message |
-| Registration | `test_register_new_user_successfully` | New user registers and sees welcome message |
-| Registration | `test_register_duplicate_username_shows_error` | Existing username triggers field-level error |
-| Registration | `test_register_blank_form_shows_validation_errors` | Empty form shows required-field errors |
-| Accounts | `test_accounts_overview_displays_after_login` | Accounts heading and table visible after login |
-| Accounts | `test_accounts_table_contains_account_links` | Table has at least one clickable account link |
-| Accounts | `test_open_new_checking_account` | CHECKING account opens and returns a numeric ID |
-| Accounts | `test_open_new_savings_account` | SAVINGS account opens and returns a numeric ID |
-| Transfer | `test_transfer_funds_between_accounts` | $100 transfer shows "Transfer Complete!" |
-| Transfer | `test_transfer_confirmation_shows_amount` | Confirmation message contains the exact amount |
+* [Manual and exploratory test cases](https://docs.google.com/spreadsheets/d/1Y6SNjHjeQ5mN3Z1oCo8Gp-3OE2-S-Jf9Gco2HFdXYKA/edit?usp=sharing)
 
 ---
 
-## Prerequisites
+## 🧰 Technologies
 
-- Python 3.11+
-- Google Chrome (latest)
-- Git
+* Python 3.11+
+* Selenium WebDriver
+* Pytest
+* Pytest-HTML
+* WebDriver Manager
 
 ---
 
-## Installation
+## ⚙️ Prerequisites
+
+Make sure you have installed:
+
+* Google Chrome
+* Python 3.11+
+* Git
+
+---
+
+## 🐍 Environment Setup
+
+Clone the repository:
 
 ```bash
-# 1. Clone the repository
 git clone https://github.com/your-username/parabank-qa.git
 cd parabank-qa
+```
 
-# 2. Create and activate a virtual environment
+Create and activate a virtual environment:
+
+```bash
 python -m venv venv
+```
 
-# Windows
+Windows:
+
+```bash
 venv\Scripts\activate
-# macOS / Linux
-source venv/bin/activate
+```
 
-# 3. Install dependencies
+macOS / Linux:
+
+```bash
+source venv/bin/activate
+```
+
+Install dependencies:
+
+```bash
 pip install -r requirements.txt
 ```
 
 ---
 
-## Running Tests
+## ▶️ Running Tests
+
+Run all tests:
 
 ```bash
-# Run all tests (HTML report written to reports/report.html)
 pytest
+```
 
-# Run a single test file
+Run a specific file:
+
+```bash
 pytest tests/test_login.py
+```
 
-# Run with verbose output
-pytest -v
+Run a single test:
 
-# Run one specific test
+```bash
 pytest tests/test_login.py::test_login_valid_user
+```
 
-# Run without the HTML report
+Verbose mode:
+
+```bash
+pytest -v
+```
+
+Run without HTML report:
+
+```bash
 pytest --no-header -p no:html
 ```
 
-Open `reports/report.html` in any browser to view the formatted report.
+The HTML report is automatically generated at:
 
----
-
-## Architecture
-
-### Page Object Model
-
-Every page of ParaBank has a corresponding class under `pages/`. Each class inherits from `BasePage`, which wraps Selenium interactions with **10-second explicit waits** so tests do not break on slow connections or AJAX responses.
-
-### Fixtures (`conftest.py`)
-
-| Fixture | Scope | Description |
-|---|---|---|
-| `driver` | function | Creates a Chrome session, opens the home page, quits after the test |
-| `logged_in_driver` | function | Builds on `driver`; authenticates as `john` before yielding |
-
-### CI / CD
-
-Tests run automatically on every push and pull request via **GitHub Actions** (`ubuntu-latest`, Python 3.11). Chrome is installed first; `driver_factory.py` detects the `CI` environment variable and enables headless mode automatically. The HTML report is uploaded as a build artifact after every run.
-
----
-
----
-
-# ParaBank QA Automatización
-
-> [English version](#parabank-qa-automation)
-
-Framework de automatización de pruebas end-to-end para la aplicación bancaria demo [ParaBank](https://parabank.parasoft.com), construido con **Selenium WebDriver** y **pytest** siguiendo el patrón **Page Object Model** (POM).
-
----
-
-## Stack Tecnológico
-
-| Herramienta | Versión | Rol |
-|---|---|---|
-| Python | 3.11+ | Lenguaje |
-| Selenium WebDriver | 4.x | Automatización de navegador |
-| pytest | 9.x | Ejecución de pruebas |
-| pytest-html | 4.x | Generación de reportes HTML |
-| webdriver-manager | 4.x | Gestión automática de ChromeDriver |
-
----
-
-## [Documentación casos de prueba Manuales y Exploratorios](https://docs.google.com/spreadsheets/d/1Y6SNjHjeQ5mN3Z1oCo8Gp-3OE2-S-Jf9Gco2HFdXYKA/edit?usp=sharing)
-
----
-
-## Estructura del Proyecto
-
+```bash
+reports/report.html
 ```
+
+---
+
+## 🧪 Test Coverage
+
+### Login
+
+* Successful login validation
+* Empty field validation
+* Error message verification
+
+### Registration
+
+* Successful new user registration
+* Duplicate username validation
+* Required fields validation
+
+### Accounts Overview
+
+* Proper account overview display
+* Verification of account links
+* Opening CHECKING and SAVINGS accounts
+
+### Transfers
+
+* Transfers between accounts
+* Transferred amount validation
+* Successful transfer confirmation
+
+---
+
+## 🧱 Project Architecture
+
+The project uses the **Page Object Model (POM)** pattern to separate automation logic from test logic.
+
+Main structure:
+
+```bash
 parabank-qa/
-├── locators/               # Selectores de elementos agrupados por página
-│   ├── login_locators.py
-│   ├── register_locators.py
-│   ├── accounts_locators.py
-│   └── transfer_locators.py
-├── pages/                  # Clases del Page Object Model
-│   ├── base_page.py        # Acciones compartidas con esperas explícitas
-│   ├── login_page.py
-│   ├── register_page.py
-│   ├── accounts_page.py
-│   └── transfer_page.py
-├── tests/                  # Archivos de prueba pytest
-│   ├── test_login.py
-│   ├── test_register.py
-│   ├── test_accounts.py
-│   └── test_transfer.py
-├── test_data/              # Datos de prueba reutilizables y generadores
-│   └── users.py
-├── utils/                  # Utilidades compartidas
-│   ├── config.py           # Constantes de URL
-│   ├── driver_factory.py   # Configuración de Chrome (con soporte CI)
-│   └── waits.py            # Funciones de espera explícita
-├── reports/                # Reportes HTML generados automáticamente
-├── conftest.py             # Fixtures de pytest (driver, logged_in_driver)
-├── pytest.ini              # Configuración de pytest
+├── locators/
+├── pages/
+├── tests/
+├── test_data/
+├── utils/
+├── reports/
+├── conftest.py
+├── pytest.ini
 └── requirements.txt
 ```
 
----
+### Main Components
 
-## Cobertura de Pruebas
+#### `pages/`
 
-| Módulo | Prueba | Qué verifica |
-|---|---|---|
-| Login | `test_login_valid_user` | Credenciales válidas redirigen a Accounts Overview |
-| Login | `test_login_empty` | Dejar campos vacíos muestra un mensaje de error |
-| Registro | `test_register_new_user_successfully` | Usuario nuevo se registra y ve el mensaje de bienvenida |
-| Registro | `test_register_duplicate_username_shows_error` | Usuario existente genera error en el campo correspondiente |
-| Registro | `test_register_blank_form_shows_validation_errors` | Formulario vacío muestra errores de campo requerido |
-| Cuentas | `test_accounts_overview_displays_after_login` | Encabezado y tabla de cuentas visibles tras el login |
-| Cuentas | `test_accounts_table_contains_account_links` | La tabla tiene al menos un enlace de cuenta |
-| Cuentas | `test_open_new_checking_account` | Se abre una cuenta CHECKING y se recibe un ID numérico |
-| Cuentas | `test_open_new_savings_account` | Se abre una cuenta SAVINGS y se recibe un ID numérico |
-| Transferencia | `test_transfer_funds_between_accounts` | Transferencia de $100 muestra "Transfer Complete!" |
-| Transferencia | `test_transfer_confirmation_shows_amount` | El mensaje de confirmación contiene el monto exacto |
+Contains Page Object classes responsible for encapsulating interactions with each screen.
 
----
+#### `locators/`
 
-## Requisitos Previos
+Contains grouped selectors for each page.
 
-- Python 3.11+
-- Google Chrome (última versión)
-- Git
+#### `tests/`
+
+Contains automated test scenarios implemented with pytest.
+
+#### `utils/`
+
+Reusable utilities such as:
+
+* Driver setup
+* Explicit waits
+* Global configuration
 
 ---
 
-## Instalación
+## 🧩 Important Fixtures
+
+### `driver`
+
+* Initializes a Chrome session
+* Opens the application
+* Closes the browser after each test
+
+### `logged_in_driver`
+
+* Extends the `driver` fixture
+* Automatically logs in before authenticated tests
+
+---
+
+## 🚀 CI/CD
+
+The project is prepared for automatic execution using **GitHub Actions**.
+
+Includes:
+
+* Automatic execution on pushes and pull requests
+* Headless execution support in CI
+* Automatic HTML report generation
+* Report artifact uploads
+
+---
+
+## 🧼 Best Practices Used
+
+* Page Object Model (POM)
+* Explicit waits for stability
+* Reusable fixtures
+* Separation of concerns
+* Independent tests
+* Scalable and maintainable structure
+
+---
+
+## 🚀 Possible Future Improvements
+
+* Allure Reports integration
+* Data-driven testing
+* Cross-browser testing
+* Dockerized environment
+* Selenium Grid integration
+
+---
+
+## 👨‍💻 Author
+
+Project created by Martin Osuna as a QA Automation practice project using Python, Selenium WebDriver, and end-to-end testing.
+
+---
+
+ESP
+
+# 🎯 Objetivo
+
+Este repositorio contiene un framework de automatización de pruebas end-to-end para la aplicación bancaria demo [ParaBank](https://parabank.parasoft.com), utilizando:
+
+* ✅ Selenium WebDriver
+* ✅ Pytest
+* ✅ Page Object Model (POM)
+* ✅ Automatización UI
+* ✅ Reportes HTML automáticos
+
+El objetivo es validar funcionalidades críticas del sistema bancario de forma reproducible y mantenible.
+
+Entre ellas:
+
+* Login de usuarios
+* Registro de cuentas
+* Visualización de cuentas bancarias
+* Apertura de nuevas cuentas
+* Transferencias entre cuentas
+* Validaciones de formularios y mensajes de error
+
+---
+
+## 📝 Documentación de Pruebas Manuales
+
+* [Casos de prueba manuales y exploratorios](https://docs.google.com/spreadsheets/d/1Y6SNjHjeQ5mN3Z1oCo8Gp-3OE2-S-Jf9Gco2HFdXYKA/edit?usp=sharing)
+
+---
+
+## 🧰 Tecnologías
+
+* Python 3.11+
+* Selenium WebDriver
+* Pytest
+* Pytest-HTML
+* WebDriver Manager
+
+---
+
+## ⚙️ Requisitos previos
+
+Tener instalado:
+
+* Google Chrome
+* Python 3.11+
+* Git
+
+---
+
+## 🐍 Setup del entorno
+
+Clonar el repositorio:
 
 ```bash
-# 1. Clonar el repositorio
 git clone https://github.com/your-username/parabank-qa.git
 cd parabank-qa
+```
 
-# 2. Crear y activar un entorno virtual
+Crear y activar entorno virtual:
+
+```bash
 python -m venv venv
+```
 
-# Windows
+Windows:
+
+```bash
 venv\Scripts\activate
-# macOS / Linux
-source venv/bin/activate
+```
 
-# 3. Instalar dependencias
+macOS / Linux:
+
+```bash
+source venv/bin/activate
+```
+
+Instalar dependencias:
+
+```bash
 pip install -r requirements.txt
 ```
 
 ---
 
-## Ejecución de Pruebas
+## ▶️ Ejecutar tests
+
+Correr todos los tests:
 
 ```bash
-# Ejecutar todas las pruebas (reporte en reports/report.html)
 pytest
+```
 
-# Ejecutar un archivo específico
+Correr un archivo específico:
+
+```bash
 pytest tests/test_login.py
+```
 
-# Ejecutar con salida detallada
-pytest -v
+Correr un test puntual:
 
-# Ejecutar una prueba específica
+```bash
 pytest tests/test_login.py::test_login_valid_user
+```
 
-# Ejecutar sin reporte HTML
+Modo verbose:
+
+```bash
+pytest -v
+```
+
+Ejecutar sin reporte HTML:
+
+```bash
 pytest --no-header -p no:html
 ```
 
-Abre `reports/report.html` en cualquier navegador para ver el reporte formateado.
+El reporte HTML se genera automáticamente en:
+
+```bash
+reports/report.html
+```
 
 ---
 
-## Arquitectura
+## 🧪 Cobertura de pruebas
 
-### Page Object Model
+### Login
 
-Cada página de ParaBank tiene su clase correspondiente en `pages/`. Todas heredan de `BasePage`, que envuelve las interacciones de Selenium con **esperas explícitas de 10 segundos** para que las pruebas no fallen por tiempos de carga lentos o respuestas AJAX.
+* Validación de login exitoso
+* Validación de campos vacíos
+* Verificación de mensajes de error
 
-### Fixtures (`conftest.py`)
+### Registro
 
-| Fixture | Alcance | Descripción |
-|---|---|---|
-| `driver` | función | Crea una sesión Chrome, abre la página principal y cierra el navegador al terminar |
-| `logged_in_driver` | función | Extiende `driver`; autentica como `john` antes de ceder el control |
+* Registro exitoso de nuevos usuarios
+* Validación de usuario duplicado
+* Validación de campos obligatorios
 
-### CI / CD
+### Accounts Overview
 
-Las pruebas se ejecutan automáticamente en cada push y pull request mediante **GitHub Actions** (`ubuntu-latest`, Python 3.11). Chrome se instalará durante este proceso; `driver_factory.py` detecta la variable de entorno `CI` y activa el modo headless automáticamente. El reporte HTML se sube como artefacto de la build después de cada ejecución.
+* Visualización correcta de cuentas
+* Verificación de links de cuentas
+* Apertura de cuentas CHECKING y SAVINGS
+
+### Transferencias
+
+* Transferencia entre cuentas
+* Validación del monto transferido
+* Confirmación de transferencia exitosa
+
+---
+
+## 🧱 Arquitectura del proyecto
+
+El proyecto utiliza el patrón **Page Object Model (POM)** para separar la lógica de automatización de la lógica de pruebas.
+
+Estructura principal:
+
+```bash
+parabank-qa/
+├── locators/
+├── pages/
+├── tests/
+├── test_data/
+├── utils/
+├── reports/
+├── conftest.py
+├── pytest.ini
+└── requirements.txt
+```
+
+### Componentes principales
+
+#### `pages/`
+
+Contiene las clases Page Object encargadas de encapsular las interacciones con cada pantalla.
+
+#### `locators/`
+
+Contiene los selectores de elementos agrupados por página.
+
+#### `tests/`
+
+Contiene los escenarios automatizados implementados con pytest.
+
+#### `utils/`
+
+Funciones reutilizables como:
+
+* Configuración del driver
+* Waits explícitos
+* Configuración global
+
+---
+
+## 🧩 Fixtures importantes
+
+### `driver`
+
+* Inicializa una sesión de Chrome
+* Abre la aplicación
+* Cierra el navegador al finalizar el test
+
+### `logged_in_driver`
+
+* Extiende el fixture `driver`
+* Realiza login automático antes de ejecutar pruebas autenticadas
+
+---
+
+## 🚀 CI/CD
+
+El proyecto está preparado para ejecutarse automáticamente mediante **GitHub Actions**.
+
+Incluye:
+
+* Ejecución automática en pushes y pull requests
+* Soporte para ejecución headless en CI
+* Generación automática de reportes HTML
+* Upload de artifacts del reporte
+
+---
+
+## 🧼 Buenas prácticas usadas
+
+* Uso de Page Object Model (POM)
+* Esperas explícitas para mayor estabilidad
+* Fixtures reutilizables
+* Separación de responsabilidades
+* Tests independientes
+* Estructura escalable y mantenible
+
+---
+
+## 🚀 Posibles mejoras futuras
+
+* Integración con Allure Reports
+* Data-driven testing
+* Cross-browser testing
+* Dockerización del entorno
+* Integración con Selenium Grid
+
+---
+
+## 👨‍💻 Autor
+
+Proyecto creado por Martin Osuna como práctica de QA Automation utilizando Python, Selenium WebDriver y testing end-to-end.
